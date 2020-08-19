@@ -7,14 +7,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp;
+using CefSharp.WinForms;
 
 namespace ChromiumBasedBrowser
 {
-    public partial class Form1 : Form
+    public partial class Browser : Form
     {
-        public Form1()
+        public ChromiumWebBrowser browser;
+
+        public Browser()
         {
             InitializeComponent();
+            InitializeBrowser();
+        }
+
+        private void InitializeBrowser()
+        {
+            Cef.Initialize(new CefSettings());
+            browser = new ChromiumWebBrowser("https://datorium.eu");
+            browser.Width = 400;
+            browser.Height = 600;
+            this.Controls.Add(browser);
         }
     }
 }

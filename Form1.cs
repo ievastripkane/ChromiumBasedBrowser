@@ -14,7 +14,7 @@ namespace ChromiumBasedBrowser
 {
     public partial class Browser : Form
     {
-        public ChromiumWebBrowser browser;
+        private ChromiumWebBrowser browser;
 
         public Browser()
         {
@@ -26,9 +26,30 @@ namespace ChromiumBasedBrowser
         {
             Cef.Initialize(new CefSettings());
             browser = new ChromiumWebBrowser("https://datorium.eu");
-            browser.Width = 400;
-            browser.Height = 600;
+            browser.Dock = DockStyle.Fill;
             this.Controls.Add(browser);
+        }
+
+        private void toolStripButtonGo_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                browser.Load(toolStripAddressBar.Text);
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void toolStripButtonBack_Click(object sender, EventArgs e)
+        {
+            browser.Back();
+        }
+
+        private void toolStripButtonForward_Click(object sender, EventArgs e)
+        {
+            browser.Forward();
         }
     }
 }

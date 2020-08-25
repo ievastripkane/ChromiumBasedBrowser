@@ -31,10 +31,9 @@ namespace ChromiumBasedBrowser
         private void InitializeBrowser()
         {
             Cef.Initialize(new CefSettings());
-            browser = new ChromiumWebBrowser("https://google.lv");
-            browser.Dock = DockStyle.Fill;
-            BrowserTabs.TabPages[0].Controls.Add(browser);
-            browser.AddressChanged += Browser_AddressChanged;
+            AddBrowserTab();
+            BrowserTabs.TabPages[0].Dispose();
+            BrowserTabs.TabPages[0].Dispose();
         }
 
         private void toolStripButtonGo_Click(object sender, EventArgs e)
@@ -51,12 +50,22 @@ namespace ChromiumBasedBrowser
         {
             browser.Forward();
         }
+
         private void Browser_AddressChanged(object sender, AddressChangedEventArgs e)
         {
             var selectedBrowser = (ChromiumWebBrowser)sender;
             this.Invoke(new MethodInvoker(() =>
             {
                 toolStripAddressBar.Text = e.Address;
+            }));
+        }
+
+        private void Browser_TitleChanged(object sender, TitleChangedEventArgs e)
+        {
+            var selectedBrowser = (ChromiumWebBrowser)sender;
+            this.Invoke(new MethodInvoker(() =>
+            {
+                selectedBrowser.Parent.Text = e.Title;
             }));
         }
 
@@ -77,7 +86,8 @@ namespace ChromiumBasedBrowser
         {
             try
             {
-                browser.Load(address);
+                var selectedBrowser = (ChromiumWebBrowser)BrowserTabs.SelectedTab.Controls[0];
+                selectedBrowser.Load(address);
             }
             catch
             {
@@ -87,9 +97,25 @@ namespace ChromiumBasedBrowser
 
         private void toolStripButtonAddTab_Click(object sender, EventArgs e)
         {
-            var newTabPage = new TabPage();
-            newTabPage.Text = "New Tab";
-            BrowserTabs.TabPages.Add(newTabPage);
+            AddBrowserTab();
+            ///select the latest browser tab
+            BrowserTabs.SelectedTab = BrowserTabs.TabPages[BrowserTabs.TabPages.Count - 1];
         }
+
+        private void AddBrowserTab()
+        {
+            ///adding a tab
+            var newTabPage = new TabPage();
+            newTabPage.Text = "New tab";
+            BrowserTabs.TabPages.Add(newTabPage);
+
+            ///adding a BROWSER
+            browser = new ChromiumWebBrowser("https://www.google.lv");
+            browser.Dock = DockStyle.Fill;
+            browser.AddressChanged += Browser_AddressChanged;
+            browser.TitleChanged += Browser_TitleChanged;
+            newTabPage.Controls.Add(browser);
+        }
+
     }
 }

@@ -33,7 +33,7 @@ namespace ChromiumBasedBrowser
             Cef.Initialize(new CefSettings());
             AddBrowserTab();
             BrowserTabs.TabPages[0].Dispose();
-            BrowserTabs.TabPages[0].Dispose();
+            //BrowserTabs.TabPages[0].Dispose();
         }
 
         private void toolStripButtonGo_Click(object sender, EventArgs e)
@@ -99,7 +99,7 @@ namespace ChromiumBasedBrowser
         {
             AddBrowserTab();
             ///select the latest browser tab
-            BrowserTabs.SelectedTab = BrowserTabs.TabPages[BrowserTabs.TabPages.Count - 1];
+            BrowserTabs.SelectedTab = BrowserTabs.TabPages[BrowserTabs.TabPages.Count - 2];
         }
 
         private void AddBrowserTab()
@@ -107,9 +107,10 @@ namespace ChromiumBasedBrowser
             ///adding a tab
             var newTabPage = new TabPage();
             newTabPage.Text = "New tab";
-            BrowserTabs.TabPages.Add(newTabPage);
+            //BrowserTabs.TabPages.Add(newTabPage);
+            BrowserTabs.TabPages.Insert(BrowserTabs.TabPages.Count - 1, newTabPage);
 
-            ///adding a BROWSER
+            ///adding a browser
             browser = new ChromiumWebBrowser("https://www.google.lv");
             browser.Dock = DockStyle.Fill;
             browser.AddressChanged += Browser_AddressChanged;
@@ -117,5 +118,19 @@ namespace ChromiumBasedBrowser
             newTabPage.Controls.Add(browser);
         }
 
+        private void BrowserTabs_TabIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BrowserTabs_Click(object sender, EventArgs e)
+        {
+            if (BrowserTabs.SelectedTab == BrowserTabs.TabPages[BrowserTabs.TabPages.Count - 1])
+            {
+                AddBrowserTab();
+                ///select the latest browser tab
+                BrowserTabs.SelectedTab = BrowserTabs.TabPages[BrowserTabs.TabPages.Count - 2];
+            }
+        }
     }
 }
